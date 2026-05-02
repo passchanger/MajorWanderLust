@@ -1,44 +1,60 @@
-/* navbar */
+/* ===== BASE ===== */
+* {
+  box-sizing: border-box;
+}
+
 body {
   font-family: "Plus Jakarta Sans", sans-serif !important;
   display: flex;
   flex-direction: column;
   min-height: 100vh;
+  background: #0a0a0f;
+  color: #fff;
 }
-.container {
+
+.container-fluid {
   flex: 1;
+  padding: 0 2rem;
 }
+
+/* ===== NAVBAR ===== */
 .navbar {
-  height: 5rem;
-  background-color: white;
+  height: auto;
+  background: transparent !important;
 }
+
 .fa-compass {
   color: #fe424d;
   font-size: 2rem;
 }
+
 .nav-link {
-  color: #222222 !important;
+  color: rgba(255, 255, 255, 0.7) !important;
 }
 
-/* Footer */
-
-.f-info-links a {
-  text-decoration: none;
-  color: #222222;
-}
-
-.f-info-links a:hover {
-  text-decoration: underline;
-}
-
+/* ===== FOOTER ===== */
 .f-info {
   text-align: center;
-  height: 8rem;
-  background-color: #ebebeb;
+  background: rgba(255, 255, 255, 0.03);
+  border-top: 1px solid rgba(255, 255, 255, 0.07);
+  padding: 2rem;
   display: flex;
   flex-wrap: wrap;
   justify-content: space-evenly;
   align-items: center;
+  color: rgba(255, 255, 255, 0.4);
+}
+
+.f-info-links a {
+  text-decoration: none;
+  color: rgba(255, 255, 255, 0.5);
+  font-size: 0.85rem;
+  transition: color 0.2s ease;
+}
+
+.f-info-links a:hover {
+  color: #fe424d;
+  text-decoration: none;
 }
 
 .f-info-links,
@@ -48,66 +64,195 @@ body {
   display: flex;
   align-items: center;
   justify-content: center;
+  gap: 1rem;
+  margin-bottom: 0.5rem;
 }
+
 .f-info-socials i {
-  margin-right: 1rem;
-  font-size: 1.2rem;
+  font-size: 1.1rem;
+  color: rgba(255, 255, 255, 0.4);
+  transition: color 0.2s ease;
+  cursor: pointer;
 }
 
-/* card */
+.f-info-socials i:hover {
+  color: #fe424d;
+}
 
+/* ===== CARDS ===== */
 .listing-card {
-  border: none !important;
-  margin-bottom: 2rem;
+  background: rgba(255, 255, 255, 0.04) !important;
+  border: 1px solid rgba(255, 255, 255, 0.08) !important;
+  border-radius: 18px !important;
+  overflow: hidden;
+  transition: all 0.35s ease;
 }
+
+.listing-card:hover {
+  transform: translateY(-8px);
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4);
+  border-color: rgba(254, 66, 77, 0.3) !important;
+}
+
 .card-img-top {
-  border-radius: 1rem !important;
   width: 100% !important;
+  height: 210px;
   object-fit: cover !important;
+  transition: transform 0.4s ease;
 }
+
+.listing-card:hover .card-img-top {
+  transform: scale(1.05);
+}
+
 .card-body {
-  padding: 0 !important;
+  padding: 1rem !important;
+  background: transparent;
 }
-
-.card-text {
-  font-weight: 400 !important;
-}
-
-/* card effect */
 
 .listingLink {
   text-decoration: none;
+  color: inherit;
+  display: block;
 }
 
-.card-img-overlay {
-  opacity: 0;
-}
-.card-img-overlay:hover {
-  opacity: 0.2;
-  background-color: white;
-}
-
-.add-btn {
-  background-color: #fe424d !important;
-  border: none !important;
-}
-
-/* show page */
+/* ===== SHOW PAGE ===== */
 .show-img {
   height: 30vh !important;
+  border-radius: 18px;
+  object-fit: cover;
 }
 
 .btns {
   display: flex;
+  gap: 0.5rem;
 }
 
 .show-card {
   padding-left: 0;
   padding-right: 0;
+  background: transparent !important;
+  border: none !important;
 }
 
-/* map */
+/* ===== MAP ===== */
 #map {
-  width: 50vw;
-  height: 50vh;
+  width: 100%;
+  height: 350px;
+  border-radius: 16px;
+}
+
+/* ===== BUTTONS ===== */
+.btn-outline-dark {
+  border-color: rgba(255, 255, 255, 0.2) !important;
+  color: rgba(255, 255, 255, 0.7) !important;
+}
+
+.btn-outline-dark:hover {
+  background: rgba(255, 255, 255, 0.1) !important;
+  color: #fff !important;
+}
+
+/* ===== ALERTS ===== */
+.alert {
+  background: rgba(255, 255, 255, 0.05) !important;
+  border: 1px solid rgba(255, 255, 255, 0.1) !important;
+  color: rgba(255, 255, 255, 0.7) !important;
+  border-radius: 12px;
+}
+
+/* ===== FLASH MESSAGES ===== */
+.flash-success {
+  background: rgba(25, 195, 125, 0.15);
+  border: 1px solid rgba(25, 195, 125, 0.3);
+  color: #19c37d;
+  border-radius: 12px;
+  padding: 0.75rem 1rem;
+}
+
+.flash-error {
+  background: rgba(254, 66, 77, 0.15);
+  border: 1px solid rgba(254, 66, 77, 0.3);
+  color: #fe424d;
+  border-radius: 12px;
+  padding: 0.75rem 1rem;
+}
+
+/* ===== FORMS ===== */
+.form-control {
+  background: rgba(255, 255, 255, 0.06) !important;
+  border: 1px solid rgba(255, 255, 255, 0.12) !important;
+  color: #fff !important;
+  border-radius: 10px;
+}
+
+.form-control:focus {
+  box-shadow: 0 0 0 3px rgba(254, 66, 77, 0.2) !important;
+  border-color: rgba(254, 66, 77, 0.5) !important;
+}
+
+.form-control::placeholder {
+  color: rgba(255, 255, 255, 0.3) !important;
+}
+
+.form-label {
+  color: rgba(255, 255, 255, 0.7);
+  font-weight: 500;
+}
+
+/* ===== SCROLLBAR ===== */
+::-webkit-scrollbar {
+  width: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: #0a0a0f;
+}
+
+::-webkit-scrollbar-thumb {
+  background: rgba(254, 66, 77, 0.4);
+  border-radius: 3px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #fe424d;
+}
+
+/* ===== SMOOTH SCROLL ===== */
+html {
+  scroll-behavior: smooth;
+}
+
+/* ===== GRID ROW GAP ===== */
+.row {
+  row-gap: 1.5rem;
+}
+
+.leaflet-container {
+  background: #fff !important;
+}
+.pay-btn {
+  background: linear-gradient(135deg, #ff385c, #ff7a18);
+  border: none;
+  color: white;
+  font-weight: 700;
+  padding: 14px;
+  border-radius: 14px;
+  width: 100%;
+  font-size: 1rem;
+  transition: all 0.3s ease;
+  box-shadow: 0 6px 18px rgba(255, 56, 92, 0.3);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+}
+
+.pay-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 10px 25px rgba(255, 56, 92, 0.5);
+}
+
+.pay-btn:active {
+  transform: scale(0.97);
 }

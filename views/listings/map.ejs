@@ -1,0 +1,164 @@
+<% layout('layouts/boilerplate') -%>
+
+<!-- LEAFLET CSS -->
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+
+<style>
+  .container-split {
+    display: flex;
+    height: 90vh;
+  }
+
+  /* LEFT SIDE */
+  .left {
+    width: 40%;
+    overflow-y: auto;
+    padding: 1rem;
+    background: #111;
+    color: white;
+  }
+
+  .left h5 {
+    margin-bottom: 1rem;
+  }
+
+  .card {
+    margin-bottom: 1rem;
+    cursor: pointer;
+    transition: 0.2s;
+    border: none;
+    border-radius: 12px;
+    overflow: hidden;
+  }
+
+  .card img {
+    height: 180px;
+    object-fit: cover;
+  }
+
+  .card:hover {
+    transform: scale(1.03);
+  }
+
+  .card-body {
+    background: #1c1c1c;
+    color: white;
+  }
+
+  /* RIGHT SIDE */
+  .right {
+    width: 60%;
+  }
+
+  #map {
+    height: 100%;
+    width: 100%;
+  }
+</style>
+
+<div class="container-split">
+
+  <!-- LEFT -->
+  <div class="left">
+    <h5>🌍 Explore Listings</h5>
+
+    <% listings.forEach(listing => { %>
+      <% if(listing.geometry && listing.geometry.coordinates){ %>
+
+        <div class="card"
+             onmouseover="highlightMarker('<%= listing._id %>')"
+             onmouseout="resetMarker()"
+             onclick="zoomTo(<%= listing.geometry.coordinates[1] %>, <%= listing.geometry.coordinates[0] %>)">
+
+          <img src="<%= listing.image.url %>" class="card-img-top">
+
+          <div class="card-body">
+            <b><%= listing.title %></b><br>
+            ₹ <%= listing.price.toLocaleString("en-IN") %><br>
+            <small><%= listing.location %></small>
+          </div>
+
+        </div>
+
+      <% } %>
+    <% }) %>
+  </div>
+
+  <!-- RIGHT -->
+  <div class="right">
+    <div id="map"></div>
+  </div>
+
+</div>
+
+<!-- LEAFLET JS -->
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+
+<script>
+  console.log("MAP + HOVER LOADED ✅");
+
+  const listings = <%- JSON.stringify(listings) %>;
+
+  const map = L.map("map").setView([20, 78], 4);
+
+  L.tileLayer("https://tile.openstreetmap.org/{z}/{x}/{y}.png", {
+    maxZoom: 19,
+    attribution: "&copy; OpenStreetMap contributors"
+  }).addTo(map);
+
+  const markers = {};
+  let activeMarker = null;
+  const markerList = [];
+
+  listings.forEach(listing => {
+    if (listing.geometry && listing.geometry.coordinates) {
+
+      const lat = listing.geometry.coordinates[1];
+      const lng = listing.geometry.coordinates[0];
+
+      const marker = L.marker([lat, lng]).addTo(map);
+
+      marker.bindPopup(`
+        <b>${listing.title}</b><br>
+        ${listing.location}<br>
+        <a href="/listings/${listing._id}">View</a>
+      `);
+
+      markers[listing._id] = marker;
+      markerList.push(marker);
+    }
+  });
+
+  // 🔥 CLICK → ZOOM
+  function zoomTo(lat, lng) {
+    map.setView([lat, lng], 12);
+  }
+
+  // 🔥 HOVER → HIGHLIGHT
+  function highlightMarker(id) {
+    if (markers[id]) {
+      activeMarker = markers[id];
+
+      activeMarker.openPopup();
+      map.setView(activeMarker.getLatLng(), 13);
+    }
+  }
+
+  // 🔥 RESET
+  function resetMarker() {
+    if (activeMarker) {
+      activeMarker.closePopup();
+    }
+  }
+
+  // 🔥 AUTO FIT ALL
+  if (markerList.length > 0) {
+    const group = new L.featureGroup(markerList);
+    map.fitBounds(group.getBounds().pad(0.2));
+  }
+
+  // 🔥 FIX RENDER
+  setTimeout(() => {
+    map.invalidateSize();
+  }, 500);
+</script>

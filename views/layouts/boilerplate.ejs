@@ -1,62 +1,267 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Wanderlust</title>
-    <link rel="stylesheet" href="/css/style.css" />
-    <link
-      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/css/bootstrap.min.css"
-      rel="stylesheet"
-      integrity="sha384-LN+7fdVzj6u52u30Kp6M/trliBMCMKTyK833zpbD+pXdCLuTusPj697FH4R/5mcr"
-      crossorigin="anonymous"
-    />
-    <link
-      rel="stylesheet"
-      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.0/css/all.min.css"
-      integrity="sha512-DxV+EoADOkOygM4IR9yXP8Sb2qwgidEmeqAEmDKIOfPRQZOWbXCzLC6vjbZyy0vPisbH2SyW27+ddLVCN+OMzQ=="
-      crossorigin="anonymous"
-      referrerpolicy="no-referrer"
-    />
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link
-      href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:ital,wght@0,200..800;1,200..800&display=swap"
-      rel="stylesheet"
-    />
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link
-      href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:ital,wght@0,200..800;1,200..800&display=swap"
-      rel="stylesheet"
-    />
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link
-      href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:ital,wght@0,200..800;1,200..800&display=swap"
-      rel="stylesheet"
-    />
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link
-      href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:ital,wght@0,200..800;1,200..800&display=swap"
-      rel="stylesheet"
-    />
-    <link rel="stylesheet" href="/css/rating.css" />
-    <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
-    <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
-  </head>
-  <body>
-    <%- include("../includes/navbar.ejs") %>
-    <div class="container">
-      <%- include("../includes/flash.ejs") %> <%- body %>
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Wanderlust</title>
+
+  <!-- ✅ Bootstrap FIRST -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/css/bootstrap.min.css" rel="stylesheet" />
+
+  <!-- ✅ Font Awesome -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.0/css/all.min.css" />
+
+  <!-- ✅ Google Font -->
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@200..800&display=swap" rel="stylesheet" />
+
+  <!-- ✅ Leaflet -->
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+
+  <!-- ✅ Your CSS LAST (overrides bootstrap) -->
+  <link rel="stylesheet" href="/css/style.css" />
+  <link rel="stylesheet" href="/css/rating.css" />
+
+  <!-- ✅ Dark background forced -->
+  <style>
+    html,
+    body {
+      background: #0a0a0f !important;
+      color: #fff !important;
+      font-family: "Plus Jakarta Sans", sans-serif !important;
+    }
+  </style>
+</head>
+
+<body>
+  <%- include("../includes/navbar.ejs") %>
+
+    <div class="container-fluid px-4 py-3">
+      <%- body %>
     </div>
-    <%- include("../includes/footer.ejs") %>
-    <script
-      src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/js/bootstrap.bundle.min.js"
-      integrity="sha384-ndDqU0Gzau9qJ1lfW4pNLlhNTkCfHzAVBReH9diLvGRem5+R9g2FzA8ZGN954O5Q"
-      crossorigin="anonymous"
-    ></script>
-    <script src="/js/script.js"></script>
-  </body>
+
+    <!-- ✅ Flash include if you have one -->
+
+    <!-- CHATBOT BUTTON -->
+    <button id="chatBtn" onclick="toggleChat()">💬</button>
+
+    <div id="chatPopup">
+      <div id="chatHeader">
+        AI Travel Planner
+        <span onclick="toggleChat()" style="cursor:pointer;">✖</span>
+      </div>
+      <div id="chatBox"></div>
+      <div id="inputArea">
+        <input id="msg" placeholder="Ask your trip...">
+        <button onclick="sendMessage()">➤</button>
+      </div>
+    </div>
+
+    <style>
+      #chatBtn {
+        position: fixed;
+        bottom: 20px;
+        right: 20px;
+        background: linear-gradient(135deg, #19c37d, #0fa86a);
+        border: none;
+        padding: 15px;
+        border-radius: 50%;
+        font-size: 22px;
+        box-shadow: 0 0 20px rgba(25, 195, 125, 0.4);
+        cursor: pointer;
+        z-index: 9999;
+        transition: transform 0.2s ease;
+      }
+
+      #chatBtn:hover {
+        transform: scale(1.1);
+      }
+
+      #chatPopup {
+        display: none;
+        position: fixed;
+        bottom: 80px;
+        right: 20px;
+        width: 320px;
+        height: 450px;
+        background: rgba(15, 15, 20, 0.97);
+        backdrop-filter: blur(20px);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        border-radius: 20px;
+        overflow: hidden;
+        box-shadow: 0 20px 60px rgba(0, 0, 0, 0.6);
+        z-index: 9999;
+      }
+
+      #chatHeader {
+        background: linear-gradient(135deg, #19c37d, #0fa86a);
+        padding: 14px 16px;
+        font-weight: 700;
+        font-size: 0.95rem;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        color: #fff;
+      }
+
+      #chatBox {
+        height: 320px;
+        overflow-y: auto;
+        padding: 12px;
+        color: white;
+        white-space: pre-line;
+      }
+
+      #chatBox::-webkit-scrollbar {
+        width: 4px;
+      }
+
+      #chatBox::-webkit-scrollbar-thumb {
+        background: rgba(255, 255, 255, 0.2);
+        border-radius: 2px;
+      }
+
+      .message {
+        margin: 8px 0;
+        padding: 10px 14px;
+        border-radius: 14px;
+        max-width: 80%;
+        font-size: 0.88rem;
+        line-height: 1.5;
+      }
+
+      .user {
+        background: linear-gradient(135deg, #19c37d, #0fa86a);
+        color: #fff;
+        margin-left: auto;
+        border-bottom-right-radius: 4px;
+      }
+
+      .ai {
+        background: rgba(255, 255, 255, 0.07);
+        border: 1px solid rgba(255, 255, 255, 0.08);
+        border-bottom-left-radius: 4px;
+      }
+
+      #inputArea {
+        display: flex;
+        border-top: 1px solid rgba(255, 255, 255, 0.08);
+      }
+
+      #inputArea input {
+        flex: 1;
+        padding: 12px;
+        border: none;
+        background: rgba(255, 255, 255, 0.05);
+        color: #fff;
+        font-size: 0.88rem;
+        outline: none;
+      }
+
+      #inputArea input::placeholder {
+        color: rgba(255, 255, 255, 0.3);
+      }
+
+      #inputArea button {
+        background: linear-gradient(135deg, #19c37d, #0fa86a);
+        border: none;
+        padding: 12px 16px;
+        color: #fff;
+        font-size: 1rem;
+        cursor: pointer;
+        transition: opacity 0.2s;
+      }
+
+      #inputArea button:hover {
+        opacity: 0.85;
+      }
+    </style>
+
+    <script>
+      function toggleChat() {
+        let chat = document.getElementById("chatPopup");
+        chat.style.display = chat.style.display === "none" || chat.style.display === "" ? "block" : "none";
+      }
+
+      async function sendMessage() {
+        let input = document.getElementById("msg");
+        let message = input.value.trim();
+        if (!message) return;
+
+        addMessage(message, "user");
+        input.value = "";
+        addTyping();
+
+        // NEW FIXED CODE
+const res = await fetch("/chat", {
+  method: "POST",
+  headers: { "Content-Type": "application/json" },
+  // We send both the message AND the listing name now!
+  body: JSON.stringify({ 
+    prompt: message,
+    listingName: typeof currentListingName !== 'undefined' ? currentListingName : "General"
+  })
+});
+
+        const data = await res.json();
+        removeTyping();
+        addMessage(data.reply, "ai");
+      }
+
+      function addMessage(text, type) {
+        const chatBox = document.getElementById("chatBox");
+        const div = document.createElement("div");
+        div.classList.add("message", type);
+        chatBox.appendChild(div);
+
+        if (type === "ai") {
+          // ✦ TYPING EFFECT FOR AI ✦
+          let i = 0;
+          const speed = 20; // Speed in milliseconds (20 is nice and smooth)
+          
+          function typeWriter() {
+            if (i < text.length) {
+              div.innerHTML += text.charAt(i);
+              i++;
+              scrollBottom(); // Keep it scrolling down as it types
+              setTimeout(typeWriter, speed);
+            }
+          }
+          typeWriter();
+        } else {
+          // User message shows up instantly
+          div.innerText = text;
+          scrollBottom();
+        }
+      }
+
+      function addTyping() {
+        const div = document.createElement("div");
+        div.classList.add("message", "ai");
+        div.id = "typing";
+        div.innerText = "✦ Thinking...";
+        document.getElementById("chatBox").appendChild(div);
+        scrollBottom();
+      }
+
+      function removeTyping() {
+        const t = document.getElementById("typing");
+        if (t) t.remove();
+      }
+
+      function scrollBottom() {
+        const box = document.getElementById("chatBox");
+        box.scrollTop = box.scrollHeight;
+      }
+
+      document.getElementById("msg")?.addEventListener("keypress", function (e) {
+        if (e.key === "Enter") sendMessage();
+      });
+    </script>
+
+    <!-- ✅ Bootstrap JS LAST -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+
 </html>

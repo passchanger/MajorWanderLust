@@ -58,6 +58,17 @@
             <div class="invalid-feedback">Enter Price</div>
           </div>
           <div class="mb-3 col-md-8">
+            <label for="category" class="form-label">Category</label>
+            <select class="form-select" name="listing[category]" required>
+              <% for (let category of categories) { %>
+              <option value="<%= category.label %>"><%= category.label %></option>
+              <% } %>
+            </select>
+            <div class="invalid-feedback">Select Category</div>
+          </div>
+        </div>
+        <div class="row">
+          <div class="mb-3 col-md-8">
             <label for="location" class="form-label">Location</label>
             <input
               class="form-control"
@@ -69,18 +80,18 @@
             <div class="valid-feedback">Nice Location!</div>
             <div class="invalid-feedback">Enter Location</div>
           </div>
-        </div>
-        <div class="mb-3">
-          <label for="country" class="form-label">Country</label>
-          <input
-            class="form-control"
-            type="text"
-            placeholder="enter country"
-            name="listing[country]"
-            required
-          />
-          <div class="valid-feedback">Great Country</div>
-          <div class="invalid-feedback">Enter Country</div>
+          <div class="mb-3 col-md-4">
+            <label for="country" class="form-label">Country</label>
+            <input
+              class="form-control"
+              type="text"
+              placeholder="enter country"
+              name="listing[country]"
+              required
+            />
+            <div class="valid-feedback">Great Country</div>
+            <div class="invalid-feedback">Enter Country</div>
+          </div>
         </div>
         <br />
         <div class="mb-3">

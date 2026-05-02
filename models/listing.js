@@ -1,6 +1,4 @@
-const { ref } = require("joi");
 const mongoose = require("mongoose");
-const { listingSchema } = require("../Schema");
 const Schema = mongoose.Schema;
 const Review = require("./review.js")
 
@@ -17,6 +15,23 @@ const listenSchema = new Schema({
     price: Number,
     location: String,
     country: String,
+    category: {
+        type: String,
+        enum: [
+            "Trending",
+            "Rooms",
+            "Iconic cities",
+            "Mountains",
+            "Castles",
+            "Arctic",
+            "Camping",
+            "Farms",
+            "Domes",
+            "Boats",
+            "Amazing pools"
+        ],
+        default: "Trending"
+    },
     geometry: {
         type: {
             type: String,

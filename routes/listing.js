@@ -1,48 +1,66 @@
 const express = require("express");
 const router = express.Router();
+const mongoose = require("mongoose");
+
 const WrapAsync = require("../utils/WrapAsync.js");
 const Listing = require("../models/listing.js");
-const {isLoggedIn, isOwner, validateListing} = require("../middleware.js");
+const { isLoggedIn, isOwner, validateListing } = require("../middleware.js");
 const listingController = require("../controllers/listing.js");
+const bookingController = require("../controllers/booking.js"); // ✅ moved to top
 const multer = require("multer");
 const { storage } = require("../cloudConfig.js");
-const upload = multer({ storage })
+const upload = multer({ storage });
 
+// TEST ROUTE
+router.get("/test", (req, res) => {
+    res.send("TEST OK");
+});
 
-router.route("/").get(WrapAsync(listingController.index)).post(isLoggedIn, upload.single("listing[image]"),validateListing, WrapAsync(listingController.createListings));
+// MAP ROUTE
+router.get("/map/all", WrapAsync(async (req, res) => {
+    const listings = await Listing.find({});
+    res.render("listings/map.ejs", { listings });
+}));
 
-router.get("/new", isLoggedIn, listingController.renderNewForm)
+// INDEX + CREATE
+router.route("/")
+    .get(WrapAsync(listingController.index))
+    .post(
+        isLoggedIn,
+        upload.single("listing[image]"),
+        validateListing,
+        WrapAsync(listingController.createListings)
+    );
 
+// NEW
+router.get("/new", isLoggedIn, listingController.renderNewForm);
 
-router.route("/:id").get(WrapAsync(listingController.showListing)
-).put(isLoggedIn, isOwner, upload.single("listing[image]"), validateListing, WrapAsync(listingController.updateListings)).delete( isLoggedIn, isOwner, WrapAsync(listingController.deleteListings)
-);
+// BOOKING ✅ must be ABOVE /:id
+router.post("/:id/book", isLoggedIn, WrapAsync(bookingController.createBooking));
 
-//edit Route
-router.get("/:id/edit",isLoggedIn,isOwner, WrapAsync(listingController.editListings)
-);
+// EDIT
+router.get("/:id/edit", isLoggedIn, isOwner, WrapAsync(listingController.editListings));
 
-
-
-//Index Route
-// router.get("/", WrapAsync(listingController.index));
-
-//New Route
-
-//Show Route
-// router.get("/:id", WrapAsync(listingController.showListing)
-// );
-
-//Create Route
-// router.post("/", isLoggedIn, validateListing, WrapAsync(listingController.createListings));
-
-//update route
-
-// router.put("/:id", isLoggedIn, isOwner, validateListing, WrapAsync(listingController.updateListings));
-
-//Delete Route
-
-// router.delete("/:id", isLoggedIn, isOwner, WrapAsync(listingController.deleteListings)
-// );
+// SHOW / UPDATE / DELETE
+router.route("/:id")
+    .get((req, res, next) => {
+        const { id } = req.params;
+        if (!mongoose.Types.ObjectId.isValid(id)) {
+            return next();
+        }
+        return listingController.showListing(req, res, next);
+    })
+    .put(
+        isLoggedIn,
+        isOwner,
+        upload.single("listing[image]"),
+        validateListing,
+        WrapAsync(listingController.updateListings)
+    )
+    .delete(
+        isLoggedIn,
+        isOwner,
+        WrapAsync(listingController.deleteListings)
+    );
 
 module.exports = router;

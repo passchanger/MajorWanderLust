@@ -1,0 +1,160 @@
+<% layout('layouts/boilerplate') -%>
+
+<style>
+  .bookings-wrap {
+    max-width: 800px;
+    margin: 2rem auto;
+  }
+
+  .bookings-title {
+    font-size: 1.8rem;
+    font-weight: 800;
+    color: #fff;
+    margin-bottom: 1.5rem;
+    display: flex;
+    align-items: center;
+    gap: 0.7rem;
+  }
+
+  .bookings-title i {
+    color: #fe424d;
+  }
+
+  .booking-item {
+    background: rgba(255,255,255,0.04);
+    border: 1px solid rgba(255,255,255,0.08);
+    border-radius: 18px;
+    padding: 1.5rem;
+    margin-bottom: 1rem;
+    display: grid;
+    grid-template-columns: 100px 1fr auto;
+    gap: 1.2rem;
+    align-items: center;
+    transition: all 0.2s ease;
+    text-decoration: none;
+  }
+
+  .booking-item:hover {
+    border-color: rgba(254,66,77,0.3);
+    background: rgba(255,255,255,0.06);
+  }
+
+  .booking-item-img {
+    width: 100px;
+    height: 75px;
+    border-radius: 12px;
+    object-fit: cover;
+  }
+
+  .booking-item-title {
+    color: #fff;
+    font-weight: 700;
+    font-size: 1rem;
+    margin-bottom: 0.3rem;
+  }
+
+  .booking-item-meta {
+    color: rgba(255,255,255,0.45);
+    font-size: 0.82rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.2rem;
+  }
+
+  .booking-item-meta i {
+    color: #fe424d;
+    width: 14px;
+  }
+
+  .booking-item-price {
+    color: #fe424d;
+    font-weight: 800;
+    font-size: 1.1rem;
+    text-align: right;
+  }
+
+  .booking-item-status {
+    font-size: 0.75rem;
+    font-weight: 600;
+    padding: 0.2rem 0.6rem;
+    border-radius: 20px;
+    text-align: center;
+    margin-top: 0.3rem;
+  }
+
+  .no-bookings {
+    text-align: center;
+    padding: 4rem 2rem;
+    color: rgba(255,255,255,0.3);
+
+    display: flex;
+    flex-direction: column;
+    align-items: center;   /* 🔥 center horizontally */
+    justify-content: center; /* 🔥 center vertically */
+}
+
+.btn-explore {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;  /* 🔥 text bhi center */
+    gap: 0.5rem;
+    background: linear-gradient(135deg, #fe424d, #ff6b35);
+    color: #fff;
+    border-radius: 10px;
+    padding: 0.6rem 1.5rem;
+    text-decoration: none;
+    font-weight: 600;
+    margin-top: 1rem;
+}
+
+  .btn-explore:hover {
+    transform: translateY(-2px);
+    color: #fff;
+    box-shadow: 0 6px 20px rgba(254,66,77,0.5);
+  }
+</style>
+
+<div class="bookings-wrap">
+  <div class="bookings-title">
+    <i class="fa-solid fa-calendar-check"></i> My Bookings
+  </div>
+
+  <% if(bookings && bookings.length > 0) { %>
+    <% for(let booking of bookings) { %>
+      <% if(booking.listing) { %>
+        <a href="/bookings/<%= booking._id %>" class="booking-item">
+
+          <img src="<%= booking.listing.image ? booking.listing.image.url : 'https://placehold.co/100x75?text=N/A' %>" 
+               class="booking-item-img" alt="<%= booking.listing.title %>" />
+
+          <div>
+            <div class="booking-item-title"><%= booking.listing.title %></div>
+            <div class="booking-item-meta">
+              <span><i class="fa-solid fa-location-dot"></i> <%= booking.listing.location %>, <%= booking.listing.country %></span>
+              <span><i class="fa-solid fa-calendar"></i> <%= new Date(booking.checkIn).toDateString() %> → <%= new Date(booking.checkOut).toDateString() %></span>
+              <span><i class="fa-solid fa-users"></i> <%= booking.guests %> guest(s)</span>
+            </div>
+          </div>
+
+          <div>
+            <div class="booking-item-price">₹<%= (booking.totalPrice || 0).toLocaleString("en-IN") %></div>
+            <div class="booking-item-status <%= booking.status === 'confirmed' ? 'status-confirmed' : 'status-cancelled' %>">
+              <%= booking.status.charAt(0).toUpperCase() + booking.status.slice(1) %>
+            </div>
+          </div>
+
+        </a>
+      <% } %>
+    <% } %>
+
+  <% } else { %>
+    <div class="no-bookings">
+      <i class="fa-solid fa-calendar-xmark"></i>
+      <h5>No bookings yet</h5>
+      <p>Start exploring and book your first stay!</p>
+      <a href="/listings" class="btn-explore">
+        <i class="fa-solid fa-compass"></i> Explore Listings
+      </a>
+    </div>
+  <% } %>
+</div>
