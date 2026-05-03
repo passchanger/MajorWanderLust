@@ -13,8 +13,18 @@ router.post("/signup", WrapAsync(userController.signUp)
 
 router.get("/login", userController.renderLoginForm);
 
-router.post("/login", saveRedirectUrl, passport.authenticate("local", { failureRedirect: '/login', failureFlash:     true}), userController.login);
-
+router.post("/login",
+  saveRedirectUrl,
+  (req,res,next)=>{
+    console.log("LOGIN BODY:", req.body);
+    next();
+  },
+  passport.authenticate("local", {
+    failureRedirect: "/login",
+    failureFlash: true
+  }),
+  userController.login
+);
 router.get("/logout", userController.logOut);
 
 module.exports = router;

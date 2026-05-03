@@ -194,12 +194,12 @@
         addTyping();
 
         // NEW FIXED CODE
-const res = await fetch("/chat", {
+const res = await fetch("/ai/chat", {
   method: "POST",
   headers: { "Content-Type": "application/json" },
   // We send both the message AND the listing name now!
   body: JSON.stringify({ 
-    prompt: message,
+    message: message,
     listingName: typeof currentListingName !== 'undefined' ? currentListingName : "General"
   })
 });
